@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anex Flo & Eli — Трекер цін</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0e0f13;
-    --surface: #16181f;
     --card: #1c1f29;
     --border: #2a2d3a;
     --accent-flo: #7c6af5;
@@ -27,8 +26,8 @@
     padding: 18px 32px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0;
-    background: rgba(14,15,19,0.95);
-    backdrop-filter: blur(12px);
+    background: rgba(14,15,19,0.96);
+    backdrop-filter: blur(14px);
     z-index: 100;
   }
   .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
@@ -37,60 +36,125 @@
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  .hero { padding: 48px 32px 32px; max-width: 1100px; margin: 0 auto; }
-  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; line-height: 1.1; }
+  .hero { padding: 52px 32px 36px; max-width: 1100px; margin: 0 auto; }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
   .hero h1 em { font-style: normal; color: var(--accent-eli); }
-  .hero p { color: var(--muted); font-size: 15px; margin-top: 12px; }
+  .hero p { color: var(--muted); font-size: 14px; line-height: 1.7; }
 
-  .section { max-width: 1100px; margin: 0 auto; padding: 0 32px 48px; }
+  .section { max-width: 1100px; margin: 0 auto; padding: 0 32px 52px; }
 
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 36px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 40px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
-  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
-  .stat-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+  /* Stat values — same font as hero title */
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
   .stat-value.flo { color: var(--accent-flo); }
   .stat-value.eli { color: var(--accent-eli); }
   .stat-value.green { color: var(--green); }
+  .stat-value.yellow { color: var(--yellow); }
 
-  .model-label { display: inline-flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 6px; margin-bottom: 18px; }
-  .label-flo { background: rgba(124,106,245,.15); color: var(--accent-flo); border: 1px solid rgba(124,106,245,.3); }
-  .label-eli { background: rgba(245,131,106,.15); color: var(--accent-eli); border: 1px solid rgba(245,131,106,.3); }
+  .model-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 6px; margin-bottom: 18px;
+  }
+  .label-flo { background: rgba(124,106,245,.12); color: var(--accent-flo); border: 1px solid rgba(124,106,245,.3); }
+  .label-eli { background: rgba(245,131,106,.12); color: var(--accent-eli); border: 1px solid rgba(245,131,106,.3); }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin-bottom: 44px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px,1fr)); gap: 14px; margin-bottom: 48px; }
 
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; transition: border-color .2s, transform .2s; position: relative; overflow: hidden; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 22px;
+    transition: border-color .2s, transform .2s;
+    position: relative; overflow: hidden;
+  }
   .card:hover { border-color: #3a3d50; transform: translateY(-2px); }
-  .card.deal { border-color: rgba(78,203,113,.45); }
-  .card.deal::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background: linear-gradient(90deg, var(--green), transparent); }
-  .card.up { border-color: rgba(255,95,95,.25); }
+  .card.deal { border-color: rgba(78,203,113,.5); }
+  .card.deal::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--green), transparent);
+  }
+  .card.up { border-color: rgba(255,95,95,.3); }
 
   .card-store { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 3px; }
   .card-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
 
-  .price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-  .price-now { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -1px; }
-  .price-old { font-family: 'Syne', sans-serif; font-size: 16px; color: var(--muted); text-decoration: line-through; font-weight: 600; }
+  .price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 
-  .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; font-family: 'Syne', sans-serif; }
+  /* ЦІНА — той самий шрифт що і "Трекер цін" = Syne 800 */
+  .price-now {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1;
+  }
+  .price-old {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: line-through;
+    letter-spacing: -0.5px;
+  }
+
+  .badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 5px;
+    letter-spacing: 0.3px;
+  }
   .badge.down { background: rgba(78,203,113,.15); color: var(--green); }
   .badge.up-b { background: rgba(255,95,95,.15); color: var(--red); }
-  .badge.same { background: rgba(122,125,142,.12); color: var(--muted); }
+  .badge.same { background: rgba(122,125,142,.1); color: var(--muted); }
 
-  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
-  .card-footer a { color: var(--accent-flo); text-decoration: none; font-weight: 600; font-size: 12px; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .card-footer a { color: var(--accent-flo); text-decoration: none; font-weight: 600; }
   .card-footer a:hover { text-decoration: underline; }
 
   .loading { text-align: center; padding: 80px 20px; color: var(--muted); }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent-flo); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border); border-top-color: var(--accent-flo);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .error-box { background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.3); border-radius: 12px; padding: 24px; text-align: center; color: var(--red); font-family: 'Syne', sans-serif; }
+  .error-box {
+    background: rgba(255,95,95,.07); border: 1px solid rgba(255,95,95,.25);
+    border-radius: 12px; padding: 24px; text-align: center;
+    color: var(--red); font-family: 'Syne', sans-serif; font-weight: 600;
+  }
 
-  footer { border-top: 1px solid var(--border); padding: 20px 32px; max-width: 1100px; margin: 0 auto; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  footer {
+    border-top: 1px solid var(--border); padding: 20px 32px;
+    max-width: 1100px; margin: 0 auto;
+    font-size: 12px; color: var(--muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
 
-  @media(max-width:600px) {
+  @media(max-width: 600px) {
     header, .hero, .section, footer { padding-left: 16px; padding-right: 16px; }
-    .price-now { font-size: 26px; }
+    .price-now { font-size: 28px; }
   }
 </style>
 </head>
@@ -106,16 +170,29 @@
 
 <div class="hero">
   <h1>Anex Flo &amp; <em>Eli</em> 2в1<br>Трекер цін 🇺🇦</h1>
-  <p>Автоматичне оновлення щодня о 10:00 · Сповіщення в Telegram при знижці<br>
-  Магазини: Hotline · Antoshka · Pampik · Rozetka</p>
+  <p>Автоматичне оновлення о 10:00 та 18:00 · Сповіщення в Telegram при знижці<br>
+     Магазини: Hotline · Antoshka · Karapuzov · MA.com.ua · Rozetka</p>
 </div>
 
 <div class="section">
+
   <div class="stats">
-    <div class="stat"><div class="stat-label">Мін. ціна Flo</div><div class="stat-value flo" id="min-flo">—</div></div>
-    <div class="stat"><div class="stat-label">Мін. ціна Eli</div><div class="stat-value eli" id="min-eli">—</div></div>
-    <div class="stat"><div class="stat-label">Магазинів</div><div class="stat-value" id="stores-count" style="color:var(--yellow)">—</div></div>
-    <div class="stat"><div class="stat-label">Знижок сьогодні</div><div class="stat-value green" id="deals-count">—</div></div>
+    <div class="stat">
+      <div class="stat-label">Мін. ціна Flo</div>
+      <div class="stat-value flo" id="min-flo">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Мін. ціна Eli</div>
+      <div class="stat-value eli" id="min-eli">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Позицій</div>
+      <div class="stat-value yellow" id="stores-count">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Знижок сьогодні</div>
+      <div class="stat-value green" id="deals-count">—</div>
+    </div>
   </div>
 
   <div id="content">
@@ -124,11 +201,12 @@
       <div>Завантаження цін...</div>
     </div>
   </div>
+
 </div>
 
 <footer>
-  <span>anex.prices · Дані з Hotline, Antoshka, Pampik, Rozetka</span>
-  <span>Оновлюється автоматично щодня о 10:00</span>
+  <span>anex.prices · Hotline · Antoshka · Karapuzov · MA.com.ua · Rozetka</span>
+  <span>Оновлюється о 10:00 та 18:00 щодня</span>
 </footer>
 
 <script>
@@ -138,7 +216,7 @@ function badge(curr, prev) {
   if (!prev) return '<span class="badge same">новий</span>';
   if (curr < prev) {
     const pct = Math.round((prev - curr) / prev * 100);
-    return `<span class="badge down">↓ &minus;${pct}%</span>`;
+    return `<span class="badge down">↓ −${pct}%</span>`;
   }
   if (curr > prev) {
     const pct = Math.round((curr - prev) / prev * 100);
@@ -157,7 +235,7 @@ function cardCls(curr, prev) {
 async function load() {
   try {
     const r = await fetch('prices.json?t=' + Date.now());
-    if (!r.ok) throw new Error('Файл prices.json не знайдено');
+    if (!r.ok) throw new Error('prices.json не знайдено');
     const data = await r.json();
 
     document.getElementById('updated-time').textContent = 'Оновлено: ' + data.updated;
@@ -169,12 +247,12 @@ async function load() {
     const minEli   = eliItems.length ? Math.min(...eliItems.map(p => p.price)) : null;
     const deals    = prices.filter(p => p.prev_price && p.price < p.prev_price).length;
 
-    document.getElementById('min-flo').textContent   = minFlo ? fmt(minFlo) : '—';
-    document.getElementById('min-eli').textContent   = minEli ? fmt(minEli) : '—';
+    document.getElementById('min-flo').textContent    = minFlo ? fmt(minFlo) : '—';
+    document.getElementById('min-eli').textContent    = minEli ? fmt(minEli) : '—';
     document.getElementById('stores-count').textContent = prices.length;
     document.getElementById('deals-count').textContent  = deals;
 
-    // Групуємо по моделі
+    // Групуємо по моделі, Flo спочатку
     const groups = {};
     for (const item of prices) {
       const key = item.model || (item.name.includes('Flo') ? 'Anex Flo 2в1' : 'Anex Eli 2в1');
@@ -182,14 +260,24 @@ async function load() {
       groups[key].push(item);
     }
 
+    // Сортуємо: Flo спочатку, потім Eli моделі
+    const sortedKeys = Object.keys(groups).sort((a, b) => {
+      if (a.includes('Flo') && !b.includes('Flo')) return -1;
+      if (!a.includes('Flo') && b.includes('Flo')) return 1;
+      return a.localeCompare(b, 'uk');
+    });
+
     let html = '';
-    for (const [model, items] of Object.entries(groups)) {
+    for (const model of sortedKeys) {
+      const items = groups[model];
       const isFlo = model.includes('Flo');
       html += `<div class="model-label ${isFlo ? 'label-flo' : 'label-eli'}">${isFlo ? '🚀' : '✨'} ${model}</div>`;
       html += '<div class="cards">';
       for (const item of items) {
         const cls = cardCls(item.price, item.prev_price);
-        const priceColor = cls === 'deal' ? 'var(--green)' : (cls === 'up' ? 'var(--red)' : 'var(--text)');
+        const priceColor = cls === 'deal'
+          ? 'var(--green)'
+          : cls === 'up' ? 'var(--red)' : 'var(--text)';
         html += `
           <div class="card ${cls}">
             <div class="card-store">${item.store}</div>
@@ -201,7 +289,7 @@ async function load() {
               ${badge(item.price, item.prev_price)}
             </div>
             <div class="card-footer">
-              <span>📅 ${item.date || '—'}</span>
+              <span>📅 ${item.date ? item.date.split('-').reverse().join('.') : '—'}</span>
               <a href="${item.url}" target="_blank">Переглянути →</a>
             </div>
           </div>`;
@@ -217,8 +305,8 @@ async function load() {
 
   } catch (e) {
     document.getElementById('content').innerHTML =
-      `<div class="error-box">⚠️ Не вдалось завантажити ціни.<br><small style="opacity:.6">${e.message}</small></div>`;
-    document.getElementById('updated-time').textContent = 'Помилка завантаження';
+      `<div class="error-box">⚠️ Не вдалось завантажити ціни.<br><small style="opacity:.5;font-weight:400">${e.message}</small></div>`;
+    document.getElementById('updated-time').textContent = 'Помилка';
   }
 }
 
