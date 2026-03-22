@@ -14,7 +14,8 @@ import requests
 # ── КОНФІГ ──────────────────────────────────────────────────────────────────
 BOT_TOKEN   = "8654506714:AAHaC6A4D_s-JXZWQUjZiMC8MmeowS0jhpM"
 CHAT_ID     = "-1003762393572"
-PRICES_FILE = "prices_history.json"
+PRICES_FILE  = "prices_history.json"
+WEBSITE_FILE = "docs/prices.json"   # GitHub Pages читає з папки /docs
 
 # ── СТОРІНКИ ДЛЯ ПАРСИНГУ ───────────────────────────────────────────────────
 PAGES = [
@@ -212,7 +213,27 @@ def run():
         )
         send_telegram(msg)
 
-    save_history({**history, **today})
+    merged = {**history, **today}
+    save_history(merged)
+
+    # Зберігаємо для сайту
+    os.makedirs("docs", exist_ok=True)
+    website_data = {
+        "updated": datetime.now().strftime("%d.%m.%Y %H:%M"),
+        "prices": [
+            {
+                "name": name, "price": data["price"],
+                "store": data.get("store",""), "url": data.get("url",""),
+                "date": data.get("date",""),
+                "prev_price": history.get(name,{}).get("price"),
+                "prev_date": history.get(name,{}).get("date"),
+            }
+            for name, data in merged.items()
+        ]
+    }
+    with open("docs/prices.json","w",encoding="utf-8") as f:
+        json.dump(website_data, f, ensure_ascii=False, indent=2)
+    print("🌐 docs/prices.json збережено")
     print(f"\n✅ Готово! Знайдено знижок: {len(alerts)}\n")
 
 
