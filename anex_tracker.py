@@ -1,135 +1,147 @@
 #!/usr/bin/env python3
 """
-Anex Flo & Eli Price Tracker
-Щодня о 10:00 перевіряє ціни та надсилає сповіщення в Telegram при зниженні.
+Anex Flo & Eli Price Tracker — з Playwright
+Парсить JavaScript-сайти (Hotline, Rozetka) через headless браузер.
 """
 
-import requests
 import json
 import os
 import re
 from datetime import datetime
-from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
+import requests
 
 # ── КОНФІГ ──────────────────────────────────────────────────────────────────
-BOT_TOKEN = "8654506714:AAHaC6A4D_s-JXZWQUjZiMC8MmeowS0jhpM"
-CHAT_ID   = "-1003762393572"
+BOT_TOKEN   = "8654506714:AAHaC6A4D_s-JXZWQUjZiMC8MmeowS0jhpM"
+CHAT_ID     = "-1003762393572"
 PRICES_FILE = "prices_history.json"
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/122.0.0.0 Safari/537.36"
-    ),
-    "Accept-Language": "uk-UA,uk;q=0.9",
-}
-
-# ── МАГАЗИНИ ДЛЯ ПАРСИНГУ ───────────────────────────────────────────────────
-STORES = [
-    # ── Anex FLO ──
+# ── СТОРІНКИ ДЛЯ ПАРСИНГУ ───────────────────────────────────────────────────
+PAGES = [
     {
-        "name": "Anex Flo — Karapuzov",
-        "model": "Anex Flo 2в1",
-        "url": "https://karapuzov.com.ua/uk/strollers/universal/anex-flo-2in1",
-        "price_selector": ".price-current, .product-price, span.price",
-        "store_url": "https://karapuzov.com.ua",
+        "name": "Anex Flo 2в1",
+        "url":  "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
+        "store": "Hotline (мін. ціна)",
+        "store_url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
+        "price_selector": ".price, [class*='price'], [class*='Price']",
     },
     {
-        "name": "Anex Flo — Rozetka",
-        "model": "Anex Flo 2в1",
-        "url": "https://rozetka.com.ua/ua/search/?text=anex+flo+2+in+1",
-        "price_selector": "span.goods-tile__price-value",
+        "name": "Anex Eli 2в1",
+        "url":  "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
+        "store": "Hotline (мін. ціна)",
+        "store_url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
+        "price_selector": ".price, [class*='price'], [class*='Price']",
+    },
+    {
+        "name": "Anex Flo 2в1 — Rozetka",
+        "url":  "https://rozetka.com.ua/ua/search/?text=anex+flo+2+in+1&section_id=80003",
+        "store": "Rozetka",
         "store_url": "https://rozetka.com.ua",
-    },
-    {
-        "name": "Anex Flo — MA.com.ua",
-        "model": "Anex Flo 2в1",
-        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/brand=anex/stroller_series=flo",
-        "price_selector": ".price, .product-price",
-        "store_url": "https://ma.com.ua",
-    },
-    # ── Anex ELI ──
-    {
-        "name": "Anex Eli — Karapuzov",
-        "model": "Anex Eli 2в1",
-        "url": "https://karapuzov.com.ua/uk/strollers/universal/anex-eli-2in1",
-        "price_selector": ".price-current, .product-price, span.price",
-        "store_url": "https://karapuzov.com.ua",
-    },
-    {
-        "name": "Anex Eli — Rozetka",
-        "model": "Anex Eli 2в1",
-        "url": "https://rozetka.com.ua/ua/search/?text=anex+eli+2+in+1",
         "price_selector": "span.goods-tile__price-value",
+    },
+    {
+        "name": "Anex Eli 2в1 — Rozetka",
+        "url":  "https://rozetka.com.ua/ua/search/?text=anex+eli+2+in+1&section_id=80003",
+        "store": "Rozetka",
         "store_url": "https://rozetka.com.ua",
-    },
-    {
-        "name": "Anex Eli — MA.com.ua",
-        "model": "Anex Eli 2в1",
-        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/brand=anex/stroller_series=eli",
-        "price_selector": ".price, .product-price",
-        "store_url": "https://ma.com.ua",
-    },
-    {
-        "name": "Anex Eli — Babymax",
-        "model": "Anex Eli 2в1",
-        "url": "https://babymax.com.ua/ukr/universalnaya-kolyaska-2-v-1---anex-eli-",
-        "price_selector": ".price, .product-price, span[class*='price']",
-        "store_url": "https://babymax.com.ua",
+        "price_selector": "span.goods-tile__price-value",
     },
 ]
 
-# ── HOTLINE (агрегатор) ──────────────────────────────────────────────────────
-HOTLINE_URL = "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565-21557629/"
-
 
 def extract_price(text: str) -> int | None:
-    """Витягує числову ціну з рядка, напр. '34 999 грн' → 34999"""
-    cleaned = re.sub(r"[^\d]", "", text)
-    if cleaned and 1000 < int(cleaned) < 200000:
-        return int(cleaned)
+    digits = re.sub(r"[^\d]", "", text.strip())
+    if digits and 5000 < int(digits) < 300000:
+        return int(digits)
     return None
 
 
-def parse_price(store: dict) -> int | None:
-    """Парсить ціну з сайту магазину."""
-    try:
-        resp = requests.get(store["url"], headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
+def parse_all_prices() -> dict:
+    results = {}
 
-        for selector in store["price_selector"].split(", "):
-            elements = soup.select(selector)
-            for el in elements:
-                price = extract_price(el.get_text())
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/122.0.0.0 Safari/537.36"
+            ),
+            locale="uk-UA",
+        )
+        page = context.new_page()
+
+        for item in PAGES:
+            print(f"\n🔍 {item['name']} ({item['store']})...")
+            try:
+                page.goto(item["url"], wait_until="networkidle", timeout=30000)
+                page.wait_for_timeout(2000)
+
+                price = None
+
+                # Спочатку CSS селектор
+                try:
+                    els = page.query_selector_all(item["price_selector"])
+                    for el in els:
+                        txt = el.inner_text()
+                        price = extract_price(txt)
+                        if price:
+                            break
+                except Exception:
+                    pass
+
+                # Якщо не знайшли — regex по всьому HTML
+                if not price:
+                    content = page.content()
+                    matches = re.findall(r"(\d[\d\s]{3,7}\d)\s*(?:₴|грн)", content)
+                    for m in matches:
+                        p_val = extract_price(m)
+                        if p_val:
+                            price = p_val
+                            break
+
                 if price:
-                    return price
-    except Exception as e:
-        print(f"  ⚠️  Помилка парсингу {store['name']}: {e}")
-    return None
+                    print(f"  ✅ Ціна: {price:,} ₴".replace(",", " "))
+                    results[item["name"]] = {
+                        "price":     price,
+                        "store":     item["store"],
+                        "url":       item["url"],
+                        "store_url": item["store_url"],
+                        "date":      datetime.now().strftime("%Y-%m-%d"),
+                    }
+                else:
+                    print(f"  ⚠️  Ціну не знайдено")
+
+            except Exception as e:
+                print(f"  ❌ Помилка: {e}")
+
+        browser.close()
+
+    return results
 
 
 def send_telegram(message: str) -> bool:
-    """Надсилає повідомлення в Telegram."""
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url     = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
-        "chat_id": CHAT_ID,
-        "text": message,
-        "parse_mode": "HTML",
+        "chat_id":                  CHAT_ID,
+        "text":                     message,
+        "parse_mode":               "HTML",
         "disable_web_page_preview": False,
     }
     try:
         resp = requests.post(url, json=payload, timeout=10)
-        data = resp.json()
-        if data.get("ok"):
-            print("  ✅ Telegram надіслано")
+        if resp.json().get("ok"):
+            print("  📬 Telegram надіслано")
             return True
         else:
-            print(f"  ❌ Telegram помилка: {data}")
+            print(f"  ❌ Telegram помилка: {resp.json()}")
     except Exception as e:
-        print(f"  ❌ Telegram виключення: {e}")
+        print(f"  ❌ Telegram: {e}")
     return False
+
+
+def fmt(p: int) -> str:
+    return f"{p:,}".replace(",", " ") + " ₴"
 
 
 def load_history() -> dict:
@@ -144,99 +156,63 @@ def save_history(data: dict):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def format_price(p: int) -> str:
-    return f"{p:,}".replace(",", " ") + " ₴"
-
-
 def run():
     print(f"\n{'='*55}")
-    print(f"  🛒 Anex Price Tracker | {datetime.now().strftime('%d.%m.%Y %H:%M')}")
-    print(f"{'='*55}\n")
+    print(f"  🛒 Anex Tracker | {datetime.now().strftime('%d.%m.%Y %H:%M')}")
+    print(f"{'='*55}")
 
     history = load_history()
-    today = datetime.now().strftime("%Y-%m-%d")
-    alerts = []
-    results = {}
+    today   = parse_all_prices()
+    alerts  = []
 
-    for store in STORES:
-        print(f"🔍 {store['name']}...")
-        price = parse_price(store)
+    for name, data in today.items():
+        new_p     = data["price"]
+        old_entry = history.get(name)
+        old_p     = old_entry.get("price") if old_entry else None
+        old_date  = old_entry.get("date", "?") if old_entry else None
 
-        if price is None:
-            print(f"  ⚠️  Не вдалось отримати ціну\n")
-            # Зберігаємо стару ціну якщо є
-            if store["name"] in history:
-                results[store["name"]] = history[store["name"]]
-            continue
-
-        print(f"  💰 Поточна ціна: {format_price(price)}")
-
-        old_entry = history.get(store["name"])
-        old_price = old_entry.get("price") if old_entry else None
-        old_date  = old_entry.get("date", "невідомо") if old_entry else None
-
-        results[store["name"]] = {
-            "model": store["model"],
-            "price": price,
-            "url":   store["url"],
-            "store_url": store["store_url"],
-            "date":  today,
-        }
-
-        if old_price and price < old_price:
-            diff = old_price - price
-            pct  = round((diff / old_price) * 100)
-            print(f"  🟢 ЗНИЖКА! Вчора {format_price(old_price)} → Сьогодні {format_price(price)} (-{pct}%)")
+        if old_p and new_p < old_p:
+            diff = old_p - new_p
+            pct  = round((diff / old_p) * 100)
+            print(f"\n  🟢 ЗНИЖКА {name}: {fmt(old_p)} → {fmt(new_p)} (-{pct}%)")
             alerts.append({
-                "store": store["name"],
-                "model": store["model"],
-                "old_price": old_price,
-                "new_price": price,
-                "diff": diff,
-                "pct": pct,
-                "url": store["url"],
-                "old_date": old_date,
+                "name": name, "store": data["store"],
+                "old_price": old_p, "new_price": new_p,
+                "diff": diff, "pct": pct,
+                "url": data["url"], "old_date": old_date,
             })
-        elif old_price and price > old_price:
-            diff = price - old_price
-            pct  = round((diff / old_price) * 100)
-            print(f"  🔴 Зросла: {format_price(old_price)} → {format_price(price)} (+{pct}%)")
+        elif old_p and new_p > old_p:
+            print(f"\n  🔴 Зросла {name}: {fmt(old_p)} → {fmt(new_p)}")
         else:
-            print(f"  ➖ Без змін")
-        print()
+            print(f"\n  ➖ {name} = {fmt(new_p)}")
 
-    # ── Надсилаємо зведення в Telegram ──────────────────────────────────────
+    # ── Telegram ────────────────────────────────────────────────────────────
     if alerts:
-        for alert in alerts:
+        for a in alerts:
             msg = (
                 f"🟢 <b>ЗНИЖКА НА КОЛЯСКУ!</b>\n\n"
-                f"🛒 <b>{alert['model']}</b>\n"
-                f"📍 {alert['store']}\n\n"
-                f"Вчора ({alert['old_date']}): <s>{format_price(alert['old_price'])}</s>\n"
-                f"Сьогодні: <b>{format_price(alert['new_price'])}</b> "
-                f"<b>(-{alert['pct']}%)</b>\n"
-                f"💰 Економія: <b>{format_price(alert['diff'])}</b>\n\n"
-                f"🔗 <a href=\"{alert['url']}\">Переглянути на сайті →</a>"
+                f"🛒 <b>{a['name']}</b>\n"
+                f"📍 {a['store']}\n\n"
+                f"Вчора ({a['old_date']}): <s>{fmt(a['old_price'])}</s>\n"
+                f"Сьогодні: <b>{fmt(a['new_price'])}</b> (-{a['pct']}%)\n"
+                f"💰 Економія: <b>{fmt(a['diff'])}</b>\n\n"
+                f"🔗 <a href=\"{a['url']}\">Переглянути →</a>"
             )
             send_telegram(msg)
     else:
-        # Щоденне мовчазне підтвердження (надсилаємо тільки якщо нема знижок)
         date_str = datetime.now().strftime("%d.%m.%Y")
-        prices_summary = "\n".join(
-            f"  • {k}: <b>{format_price(v['price'])}</b>"
-            for k, v in results.items()
-            if "price" in v
-        )
+        lines = "\n".join(
+            f"  • {n}: <b>{fmt(d['price'])}</b> ({d['store']})"
+            for n, d in today.items()
+        ) if today else "  Дані не отримано"
         msg = (
             f"ℹ️ <b>Перевірка цін {date_str}</b>\n\n"
             f"Знижок сьогодні не виявлено.\n\n"
-            f"<b>Поточні ціни:</b>\n{prices_summary}"
+            f"<b>Поточні ціни:</b>\n{lines}"
         )
         send_telegram(msg)
 
-    # ── Зберігаємо нові ціни ────────────────────────────────────────────────
-    save_history(results)
-    print(f"💾 Ціни збережено у {PRICES_FILE}")
+    save_history({**history, **today})
     print(f"\n✅ Готово! Знайдено знижок: {len(alerts)}\n")
 
 
