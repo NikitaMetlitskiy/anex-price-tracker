@@ -37,6 +37,9 @@ jobs:
             prices-history-
 
       - name: 🔍 Run price tracker
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python anex_tracker.py
 
       - name: 💾 Save updated price history
