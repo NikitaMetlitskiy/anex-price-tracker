@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Anex Flo & Eli Price Tracker
-Магазини: Hotline, Antoshka, Pampik, Rozetka, Bobas
-Моделі Eli: No.5, Secret, Muse, Midnight, Excite, Fantasy, Wander
+Магазини: Hotline, Antoshka, Karapuzov, MA.com.ua, Rozetka
 """
 
 import json
@@ -19,9 +18,9 @@ WEBSITE_FILE = "docs/prices.json"
 
 PAGES = [
 
-    # ════════════════════════════════════════════════════════════════════════
-    # HOTLINE — окремі сторінки для кожної моделі
-    # ════════════════════════════════════════════════════════════════════════
+    # ══════════════════════════════════════════════════════
+    # HOTLINE — мінімальна ціна по всіх магазинах
+    # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Hotline",
         "model": "Anex Flo 2в1", "store": "Hotline",
@@ -58,45 +57,63 @@ PAGES = [
         "selector": "[class*='price']",
     },
 
-    # ════════════════════════════════════════════════════════════════════════
-    # ANTOSHKA
-    # ════════════════════════════════════════════════════════════════════════
+    # ══════════════════════════════════════════════════════
+    # ANTOSHKA — реальний URL бренду
+    # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Antoshka",
         "model": "Anex Flo 2в1", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/f/brand-anex/series-flo/",
+        "url": "https://antoshka.ua/uk/brand/anex/?q=flo",
         "store_url": "https://antoshka.ua",
-        "selector": "[class*='price'], [class*='Price']",
+        "selector": "[class*='price'], [class*='Price'], .product-price",
     },
     {
         "name": "Anex Eli 2в1 — Antoshka",
         "model": "Anex Eli (всі моделі)", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/f/brand-anex/series-eli/",
+        "url": "https://antoshka.ua/uk/brand/anex/?q=eli",
         "store_url": "https://antoshka.ua",
-        "selector": "[class*='price'], [class*='Price']",
+        "selector": "[class*='price'], [class*='Price'], .product-price",
     },
 
-    # ════════════════════════════════════════════════════════════════════════
-    # PAMPIK
-    # ════════════════════════════════════════════════════════════════════════
+    # ══════════════════════════════════════════════════════
+    # KARAPUZOV — офіційний дилер
+    # ══════════════════════════════════════════════════════
     {
-        "name": "Anex Flo 2в1 — Pampik",
-        "model": "Anex Flo 2в1", "store": "Pampik",
-        "url": "https://pampik.com/uk/catalog/kolyaski/?brand=anex&q=flo",
-        "store_url": "https://pampik.com",
-        "selector": "[class*='price'], [class*='Price']",
+        "name": "Anex Flo 2в1 — Karapuzov",
+        "model": "Anex Flo 2в1", "store": "Karapuzov",
+        "url": "https://karapuzov.com.ua/uk/anex-flo/",
+        "store_url": "https://karapuzov.com.ua",
+        "selector": "[class*='price'], .price, [class*='Price']",
     },
     {
-        "name": "Anex Eli 2в1 — Pampik",
-        "model": "Anex Eli (всі моделі)", "store": "Pampik",
-        "url": "https://pampik.com/uk/catalog/kolyaski/?brand=anex&q=eli",
-        "store_url": "https://pampik.com",
-        "selector": "[class*='price'], [class*='Price']",
+        "name": "Anex Eli 2в1 — Karapuzov",
+        "model": "Anex Eli (всі моделі)", "store": "Karapuzov",
+        "url": "https://karapuzov.com.ua/uk/anex-eli/",
+        "store_url": "https://karapuzov.com.ua",
+        "selector": "[class*='price'], .price, [class*='Price']",
     },
 
-    # ════════════════════════════════════════════════════════════════════════
+    # ══════════════════════════════════════════════════════
+    # MA.COM.UA (babyshop)
+    # ══════════════════════════════════════════════════════
+    {
+        "name": "Anex Flo 2в1 — MA.com.ua",
+        "model": "Anex Flo 2в1", "store": "MA.com.ua",
+        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=flo",
+        "store_url": "https://ma.com.ua",
+        "selector": "[class*='price'], .price",
+    },
+    {
+        "name": "Anex Eli 2в1 — MA.com.ua",
+        "model": "Anex Eli (всі моделі)", "store": "MA.com.ua",
+        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=eli",
+        "store_url": "https://ma.com.ua",
+        "selector": "[class*='price'], .price",
+    },
+
+    # ══════════════════════════════════════════════════════
     # ROZETKA
-    # ════════════════════════════════════════════════════════════════════════
+    # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Rozetka",
         "model": "Anex Flo 2в1", "store": "Rozetka",
@@ -110,38 +127,6 @@ PAGES = [
         "url": "https://rozetka.com.ua/ua/search/?text=anex+eli+2+in+1&section_id=80003",
         "store_url": "https://rozetka.com.ua",
         "selector": "span.goods-tile__price-value",
-    },
-
-    # ════════════════════════════════════════════════════════════════════════
-    # BOBAS
-    # ════════════════════════════════════════════════════════════════════════
-    {
-        "name": "Anex Flo 2в1 — Bobas",
-        "model": "Anex Flo 2в1", "store": "Bobas",
-        "url": "https://bobas.ua/ua/shop/search/?search=anex+flo+2+in+1",
-        "store_url": "https://bobas.ua",
-        "selector": "[class*='price'], .price",
-    },
-    {
-        "name": "Anex Eli Midnight — Bobas",
-        "model": "Anex Eli Midnight", "store": "Bobas",
-        "url": "https://bobas.ua/ua/shop/search/?search=anex+eli+midnight",
-        "store_url": "https://bobas.ua",
-        "selector": "[class*='price'], .price",
-    },
-    {
-        "name": "Anex Eli Secret — Bobas",
-        "model": "Anex Eli Secret", "store": "Bobas",
-        "url": "https://bobas.ua/ua/shop/search/?search=anex+eli+secret",
-        "store_url": "https://bobas.ua",
-        "selector": "[class*='price'], .price",
-    },
-    {
-        "name": "Anex Eli Muse — Bobas",
-        "model": "Anex Eli Muse", "store": "Bobas",
-        "url": "https://bobas.ua/ua/shop/search/?search=anex+eli+muse",
-        "store_url": "https://bobas.ua",
-        "selector": "[class*='price'], .price",
     },
 ]
 
@@ -278,7 +263,6 @@ def run():
         else:
             print(f"  ➖ {fmt(new_p)}")
 
-    # ── Telegram ─────────────────────────────────────────────────────────
     if alerts:
         for a in alerts:
             send_telegram(
@@ -301,7 +285,6 @@ def run():
             f"<b>Поточні ціни:</b>\n{lines}"
         )
 
-    # ── Зберігаємо ───────────────────────────────────────────────────────
     merged = {**history, **today}
     save_history(merged)
 
