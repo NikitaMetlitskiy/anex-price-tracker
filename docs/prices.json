@@ -1,5 +1,5 @@
 {
-  "updated": "22.03.2026 14:23",
+  "updated": "22.03.2026 15:21",
   "prices": [
     {
       "name": "Anex Flo 2в1",
@@ -74,12 +74,12 @@
     {
       "name": "Anex Flo 2в1 — Antoshka",
       "model": "Anex Flo 2в1",
-      "price": 69165,
+      "price": 299895,
       "store": "Antoshka",
       "url": "https://antoshka.ua/uk/brand/anex/?q=flo",
       "date": "2026-03-22",
-      "prev_price": null,
-      "prev_date": null
+      "prev_price": 69165,
+      "prev_date": "2026-03-22"
     },
     {
       "name": "Anex Eli 2в1 — Antoshka",
@@ -88,8 +88,8 @@
       "store": "Antoshka",
       "url": "https://antoshka.ua/uk/brand/anex/?q=eli",
       "date": "2026-03-22",
-      "prev_price": null,
-      "prev_date": null
+      "prev_price": 34999,
+      "prev_date": "2026-03-22"
     },
     {
       "name": "Anex Flo 2в1 — MA.com.ua",
@@ -98,8 +98,8 @@
       "store": "MA.com.ua",
       "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=flo",
       "date": "2026-03-22",
-      "prev_price": null,
-      "prev_date": null
+      "prev_price": 33990,
+      "prev_date": "2026-03-22"
     },
     {
       "name": "Anex Eli 2в1 — MA.com.ua",
@@ -108,8 +108,8 @@
       "store": "MA.com.ua",
       "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=eli",
       "date": "2026-03-22",
-      "prev_price": null,
-      "prev_date": null
+      "prev_price": 30999,
+      "prev_date": "2026-03-22"
     }
   ]
 }
