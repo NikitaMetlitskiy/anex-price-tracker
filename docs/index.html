@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anex Flo & Eli — Трекер цін</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13;
+    --surface: #16181f;
+    --card: #1c1f29;
+    --border: #2a2d3a;
+    --accent-flo: #7c6af5;
+    --accent-eli: #f5836a;
+    --green: #4ecb71;
+    --red: #ff5f5f;
+    --yellow: #f5c842;
+    --text: #e8eaf0;
+    --muted: #7a7d8e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0;
+    background: rgba(14,15,19,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
+  .logo span { color: var(--accent-flo); }
+  .updated { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .hero { padding: 48px 32px 32px; max-width: 1100px; margin: 0 auto; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  .hero h1 em { font-style: normal; color: var(--accent-eli); }
+  .hero p { color: var(--muted); font-size: 15px; }
+
+  .section { max-width: 1100px; margin: 0 auto; padding: 0 32px 48px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 36px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+  .stat-value.flo { color: var(--accent-flo); }
+  .stat-value.eli { color: var(--accent-eli); }
+  .stat-value.green { color: var(--green); }
+
+  .model-tag { display: inline-flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 6px; margin-bottom: 16px; }
+  .tag-flo { background: rgba(124,106,245,.15); color: var(--accent-flo); border: 1px solid rgba(124,106,245,.3); }
+  .tag-eli { background: rgba(245,131,106,.15); color: var(--accent-eli); border: 1px solid rgba(245,131,106,.3); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; margin-bottom: 40px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; transition: border-color .2s, transform .2s; position: relative; overflow: hidden; }
+  .card:hover { border-color: #3a3d50; transform: translateY(-2px); }
+  .card.deal { border-color: rgba(78,203,113,.4); }
+  .card.deal::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background: linear-gradient(90deg, var(--green), transparent); }
+  .card.up { border-color: rgba(255,95,95,.25); }
+
+  .card-store { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .card-name { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+
+  .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .price-now { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -.5px; }
+  .price-old { font-size: 14px; color: var(--muted); text-decoration: line-through; }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .badge.down { background: rgba(78,203,113,.15); color: var(--green); }
+  .badge.up-b { background: rgba(255,95,95,.15); color: var(--red); }
+  .badge.same { background: rgba(122,125,142,.15); color: var(--muted); }
+
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .card-footer a { color: var(--accent-flo); text-decoration: none; font-weight: 500; }
+  .card-footer a:hover { text-decoration: underline; }
+
+  .loading { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent-flo); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box { background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.3); border-radius: 12px; padding: 20px; text-align: center; color: var(--red); }
+
+  footer { border-top: 1px solid var(--border); padding: 20px 32px; max-width: 1100px; margin: 0 auto; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media(max-width:600px) { header,.hero,.section,footer { padding-left:16px; padding-right:16px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">anex<span>.</span>prices</div>
+  <div class="updated">
+    <span class="dot"></span>
+    <span id="updated-time">Завантаження...</span>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Anex Flo &amp; <em>Eli</em> 2в1<br>Трекер цін 🇺🇦</h1>
+  <p>Автоматичне оновлення щодня о 10:00 · Сповіщення в Telegram при знижці</p>
+</div>
+
+<div class="section">
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-label">Мін. ціна Flo</div><div class="stat-value flo" id="min-flo">—</div></div>
+    <div class="stat"><div class="stat-label">Мін. ціна Eli</div><div class="stat-value eli" id="min-eli">—</div></div>
+    <div class="stat"><div class="stat-label">Знижок сьогодні</div><div class="stat-value green" id="deals-count">—</div></div>
+  </div>
+
+  <div id="content">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div>Завантаження цін...</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>anex.prices · Дані з Hotline.ua</span>
+  <span>Оновлюється автоматично щодня о 10:00</span>
+</footer>
+
+<script>
+function fmt(p) {
+  return p ? p.toLocaleString('uk-UA') + ' ₴' : '—';
+}
+
+function diffBadge(curr, prev) {
+  if (!prev) return '<span class="badge same">новий</span>';
+  if (curr < prev) {
+    const pct = Math.round((prev - curr) / prev * 100);
+    return `<span class="badge down">↓ -${pct}%</span>`;
+  }
+  if (curr > prev) {
+    const pct = Math.round((curr - prev) / prev * 100);
+    return `<span class="badge up-b">↑ +${pct}%</span>`;
+  }
+  return '<span class="badge same">= без змін</span>';
+}
+
+function cardClass(curr, prev) {
+  if (!prev) return '';
+  if (curr < prev) return 'deal';
+  if (curr > prev) return 'up';
+  return '';
+}
+
+async function loadPrices() {
+  try {
+    const resp = await fetch('prices.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('Файл не знайдено');
+    const data = await resp.json();
+
+    document.getElementById('updated-time').textContent = 'Оновлено: ' + data.updated;
+
+    const prices = data.prices || [];
+
+    // Stats
+    const floItems = prices.filter(p => p.name.includes('Flo'));
+    const eliItems = prices.filter(p => p.name.includes('Eli'));
+    const minFlo = floItems.length ? Math.min(...floItems.map(p => p.price)) : null;
+    const minEli = eliItems.length ? Math.min(...eliItems.map(p => p.price)) : null;
+    const deals  = prices.filter(p => p.prev_price && p.price < p.prev_price).length;
+
+    document.getElementById('min-flo').textContent = minFlo ? fmt(minFlo) : '—';
+    document.getElementById('min-eli').textContent = minEli ? fmt(minEli) : '—';
+    document.getElementById('deals-count').textContent = deals;
+
+    // Group by model
+    const groups = {};
+    for (const item of prices) {
+      const key = item.name.includes('Flo') ? 'Anex Flo 2в1' : 'Anex Eli 2в1';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(item);
+    }
+
+    let html = '';
+    for (const [model, items] of Object.entries(groups)) {
+      const isFlo = model.includes('Flo');
+      html += `<div class="model-tag ${isFlo ? 'tag-flo' : 'tag-eli'}">${isFlo ? '🚀' : '✨'} ${model}</div>`;
+      html += '<div class="cards">';
+      for (const item of items) {
+        const cls = cardClass(item.price, item.prev_price);
+        html += `
+          <div class="card ${cls}">
+            <div class="card-store">${item.store}</div>
+            <div class="card-name">${item.name}</div>
+            <div class="price-row">
+              <div class="price-now" style="color:${cls==='deal'?'var(--green)':'var(--text)'}">${fmt(item.price)}</div>
+              ${item.prev_price && item.prev_price !== item.price ? `<span class="price-old">${fmt(item.prev_price)}</span>` : ''}
+              ${diffBadge(item.price, item.prev_price)}
+            </div>
+            <div class="card-footer">
+              <span>📅 ${item.date || '—'}</span>
+              <a href="${item.url}" target="_blank">Переглянути →</a>
+            </div>
+          </div>`;
+      }
+      html += '</div>';
+    }
+
+    if (!prices.length) {
+      html = '<div class="error-box">Дані ще не завантажено. Запустіть трекер ще раз.</div>';
+    }
+
+    document.getElementById('content').innerHTML = html;
+
+  } catch (e) {
+    document.getElementById('content').innerHTML =
+      `<div class="error-box">⚠️ Не вдалось завантажити ціни.<br><small>${e.message}</small></div>`;
+    document.getElementById('updated-time').textContent = 'Помилка завантаження';
+  }
+}
+
+loadPrices();
+</script>
+</body>
+</html>
