@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Anex Flo & Eli Price Tracker
-Магазини: Hotline, Antoshka, Karapuzov, MA.com.ua, Rozetka
+Магазини: Hotline, Antoshka, Karapuzov, MA.com.ua, Babypark, Rozetka
 """
 
 import json
@@ -16,14 +16,13 @@ CHAT_ID      = os.environ.get("CHAT_ID", "")
 PRICES_FILE  = "prices_history.json"
 WEBSITE_FILE = "docs/prices.json"
 
-# Реальний діапазон цін коляски — від 20 000 до 80 000 ₴
 PRICE_MIN = 20000
 PRICE_MAX = 80000
 
 PAGES = [
 
     # ══════════════════════════════════════════════════════
-    # HOTLINE — мінімальна ціна по всіх магазинах
+    # HOTLINE
     # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Hotline",
@@ -62,25 +61,28 @@ PAGES = [
     },
 
     # ══════════════════════════════════════════════════════
-    # ANTOSHKA — прямі URL конкретних колясок
+    # ANTOSHKA — сторінка категорії 2в1 з фільтром бренду
     # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Antoshka",
         "model": "Anex Flo 2в1", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex&nameFilter=flo",
+        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex",
         "store_url": "https://antoshka.ua",
-        "selector": ".product-price__current, [class*='product-price'], [data-price]",
+        # Antoshka показує ціни у span з конкретним класом
+        "selector": "span.price, .product-card__price, [class='price'], .catalog-item__price",
+        "search_text": "flo",  # фільтруємо по тексту назви
     },
     {
         "name": "Anex Eli 2в1 — Antoshka",
         "model": "Anex Eli (всі моделі)", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex&nameFilter=eli",
+        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex",
         "store_url": "https://antoshka.ua",
-        "selector": ".product-price__current, [class*='product-price'], [data-price]",
+        "selector": "span.price, .product-card__price, [class='price'], .catalog-item__price",
+        "search_text": "eli",
     },
 
     # ══════════════════════════════════════════════════════
-    # KARAPUZOV — офіційний дилер
+    # KARAPUZOV
     # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Karapuzov",
@@ -98,12 +100,12 @@ PAGES = [
     },
 
     # ══════════════════════════════════════════════════════
-    # MA.COM.UA (babyshop)
+    # MA.COM.UA
     # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — MA.com.ua",
         "model": "Anex Flo 2в1", "store": "MA.com.ua",
-        "url": "https://ma.com.ua/ua/shop/kolyaska-2-v-1-anex-flo",
+        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=flo",
         "store_url": "https://ma.com.ua",
         "selector": ".price, [class*='price'], [class*='Price']",
     },
@@ -112,6 +114,24 @@ PAGES = [
         "model": "Anex Eli (всі моделі)", "store": "MA.com.ua",
         "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=eli",
         "store_url": "https://ma.com.ua",
+        "selector": ".price, [class*='price'], [class*='Price']",
+    },
+
+    # ══════════════════════════════════════════════════════
+    # BABYPARK
+    # ══════════════════════════════════════════════════════
+    {
+        "name": "Anex Flo 2в1 — Babypark",
+        "model": "Anex Flo 2в1", "store": "Babypark",
+        "url": "https://babypark.ua/kolyasky/kolyasky-universalni/anex-universalna-kolyaska-2v1-flo",
+        "store_url": "https://babypark.ua",
+        "selector": ".price, [class*='price'], [class*='Price']",
+    },
+    {
+        "name": "Anex Eli 2в1 — Babypark",
+        "model": "Anex Eli (всі моделі)", "store": "Babypark",
+        "url": "https://babypark.ua/kolyasky/kolyasky-universalni/?brand=anex&series=eli",
+        "store_url": "https://babypark.ua",
         "selector": ".price, [class*='price'], [class*='Price']",
     },
 
@@ -134,9 +154,14 @@ PAGES = [
     },
 ]
 
+# Ці записи видаляємо з history (старі некоректні дані)
+RESET_KEYS = [
+    "Anex Flo 2в1 — Antoshka",
+    "Anex Eli 2в1 — Antoshka",
+]
+
 
 def extract_price(text: str) -> int | None:
-    """Витягує ціну з рядка. Перевіряє що це реальна ціна коляски."""
     digits = re.sub(r"[^\d]", "", text.strip())
     if digits:
         val = int(digits)
@@ -163,28 +188,54 @@ def parse_all_prices() -> dict:
             print(f"\n🔍 {item['name']}...")
             try:
                 page.goto(item["url"], wait_until="networkidle", timeout=30000)
-                page.wait_for_timeout(2500)
+                page.wait_for_timeout(3000)
 
                 price = None
+                search_text = item.get("search_text", "").lower()
 
                 # CSS селектор
                 try:
                     els = page.query_selector_all(item["selector"])
                     for el in els:
+                        # Якщо є search_text — шукаємо ціну поруч з потрібним товаром
+                        if search_text:
+                            parent = el
+                            # Перевіряємо батьківський елемент на наявність назви
+                            found = False
+                            for _ in range(5):
+                                try:
+                                    parent = page.evaluate("el => el.parentElement", parent)
+                                    parent_text = page.evaluate("el => el.innerText", parent) or ""
+                                    if search_text in parent_text.lower():
+                                        found = True
+                                        break
+                                except Exception:
+                                    break
+                            if not found:
+                                continue
                         price = extract_price(el.inner_text())
                         if price:
                             break
                 except Exception:
                     pass
 
-                # Fallback — regex по HTML (шукаємо лише реальні ціни)
+                # Fallback — regex по HTML
                 if not price:
                     content = page.content()
-                    for m in re.findall(r"(\d[\d\s]{3,6}\d)\s*(?:₴|грн)", content):
-                        p_val = extract_price(m)
-                        if p_val:
-                            price = p_val
-                            break
+                    if search_text:
+                        # Шукаємо ціну після згадки назви моделі
+                        pattern = rf"(?i){search_text}[^<]{{0,200}}?(\d[\d\s]{{3,6}}\d)\s*(?:₴|грн)"
+                        for m in re.findall(pattern, content, re.DOTALL):
+                            p_val = extract_price(m)
+                            if p_val:
+                                price = p_val
+                                break
+                    if not price:
+                        for m in re.findall(r"(\d[\d\s]{3,6}\d)\s*(?:₴|грн)", content):
+                            p_val = extract_price(m)
+                            if p_val:
+                                price = p_val
+                                break
 
                 if price:
                     print(f"  ✅ {price:,} ₴".replace(",", " "))
@@ -209,7 +260,6 @@ def parse_all_prices() -> dict:
 
 def send_telegram(message: str):
     if not BOT_TOKEN or not CHAT_ID:
-        print("  ⚠️  BOT_TOKEN або CHAT_ID не задано")
         return
     try:
         resp = requests.post(
@@ -243,12 +293,20 @@ def save_history(data: dict):
 def run():
     print(f"\n{'='*60}")
     print(f"  🛒 Anex Tracker | {datetime.now().strftime('%d.%m.%Y %H:%M')}")
-    print(f"  Діапазон цін: {fmt(PRICE_MIN)} — {fmt(PRICE_MAX)}")
     print(f"{'='*60}")
 
     history = load_history()
-    today   = parse_all_prices()
-    alerts  = []
+
+    # Очищаємо некоректні старі записи
+    for key in RESET_KEYS:
+        if key in history:
+            old_val = history[key].get("price")
+            if old_val and (old_val < PRICE_MIN or old_val > PRICE_MAX):
+                print(f"  🗑️  Скидаємо некоректну ціну в history: {key} = {old_val}")
+                del history[key]
+
+    today  = parse_all_prices()
+    alerts = []
 
     for name, data in today.items():
         new_p     = data["price"]
