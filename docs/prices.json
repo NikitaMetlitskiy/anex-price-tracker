@@ -1,8 +1,9 @@
 {
-  "updated": "22.03.2026 13:41",
+  "updated": "22.03.2026 14:12",
   "prices": [
     {
       "name": "Anex Flo 2в1",
+      "model": "Anex Flo 2в1",
       "price": 33990,
       "store": "Hotline (мін. ціна)",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
@@ -12,12 +13,63 @@
     },
     {
       "name": "Anex Eli 2в1",
+      "model": "Anex Eli 2в1",
       "price": 32990,
       "store": "Hotline (мін. ціна)",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
       "date": "2026-03-22",
       "prev_price": 32990,
       "prev_date": "2026-03-22"
+    },
+    {
+      "name": "Anex Flo 2в1 — Hotline",
+      "model": "Anex Flo 2в1",
+      "price": 33990,
+      "store": "Hotline",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
+      "date": "2026-03-22",
+      "prev_price": null,
+      "prev_date": null
+    },
+    {
+      "name": "Anex Eli No.5 — Hotline",
+      "model": "Anex Eli No.5",
+      "price": 32990,
+      "store": "Hotline",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
+      "date": "2026-03-22",
+      "prev_price": null,
+      "prev_date": null
+    },
+    {
+      "name": "Anex Eli Secret — Hotline",
+      "model": "Anex Eli Secret",
+      "price": 30990,
+      "store": "Hotline",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558179/",
+      "date": "2026-03-22",
+      "prev_price": null,
+      "prev_date": null
+    },
+    {
+      "name": "Anex Eli Muse — Hotline",
+      "model": "Anex Eli Muse",
+      "price": 30990,
+      "store": "Hotline",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558180/",
+      "date": "2026-03-22",
+      "prev_price": null,
+      "prev_date": null
+    },
+    {
+      "name": "Anex Eli Midnight — Hotline",
+      "model": "Anex Eli Midnight",
+      "price": 30990,
+      "store": "Hotline",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558181/",
+      "date": "2026-03-22",
+      "prev_price": null,
+      "prev_date": null
     }
   ]
 }
