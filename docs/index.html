@@ -38,9 +38,9 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
   .hero { padding: 48px 32px 32px; max-width: 1100px; margin: 0 auto; }
-  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; line-height: 1.1; }
   .hero h1 em { font-style: normal; color: var(--accent-eli); }
-  .hero p { color: var(--muted); font-size: 15px; }
+  .hero p { color: var(--muted); font-size: 15px; margin-top: 12px; }
 
   .section { max-width: 1100px; margin: 0 auto; padding: 0 32px 48px; }
 
@@ -52,42 +52,46 @@
   .stat-value.eli { color: var(--accent-eli); }
   .stat-value.green { color: var(--green); }
 
-  .model-tag { display: inline-flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 6px; margin-bottom: 16px; }
-  .tag-flo { background: rgba(124,106,245,.15); color: var(--accent-flo); border: 1px solid rgba(124,106,245,.3); }
-  .tag-eli { background: rgba(245,131,106,.15); color: var(--accent-eli); border: 1px solid rgba(245,131,106,.3); }
+  .model-label { display: inline-flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 6px; margin-bottom: 18px; }
+  .label-flo { background: rgba(124,106,245,.15); color: var(--accent-flo); border: 1px solid rgba(124,106,245,.3); }
+  .label-eli { background: rgba(245,131,106,.15); color: var(--accent-eli); border: 1px solid rgba(245,131,106,.3); }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; margin-bottom: 40px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin-bottom: 44px; }
 
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; transition: border-color .2s, transform .2s; position: relative; overflow: hidden; }
   .card:hover { border-color: #3a3d50; transform: translateY(-2px); }
-  .card.deal { border-color: rgba(78,203,113,.4); }
+  .card.deal { border-color: rgba(78,203,113,.45); }
   .card.deal::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background: linear-gradient(90deg, var(--green), transparent); }
   .card.up { border-color: rgba(255,95,95,.25); }
 
-  .card-store { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .card-name { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .card-store { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 3px; }
+  .card-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
 
-  .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
-  .price-now { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -.5px; }
-  .price-old { font-size: 14px; color: var(--muted); text-decoration: line-through; }
-  .badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .price-now { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+  .price-old { font-family: 'Syne', sans-serif; font-size: 16px; color: var(--muted); text-decoration: line-through; font-weight: 600; }
+
+  .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; font-family: 'Syne', sans-serif; }
   .badge.down { background: rgba(78,203,113,.15); color: var(--green); }
   .badge.up-b { background: rgba(255,95,95,.15); color: var(--red); }
-  .badge.same { background: rgba(122,125,142,.15); color: var(--muted); }
+  .badge.same { background: rgba(122,125,142,.12); color: var(--muted); }
 
-  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); margin-top: 12px; }
-  .card-footer a { color: var(--accent-flo); text-decoration: none; font-weight: 500; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .card-footer a { color: var(--accent-flo); text-decoration: none; font-weight: 600; font-size: 12px; }
   .card-footer a:hover { text-decoration: underline; }
 
   .loading { text-align: center; padding: 80px 20px; color: var(--muted); }
-  .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent-flo); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent-flo); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .error-box { background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.3); border-radius: 12px; padding: 20px; text-align: center; color: var(--red); }
+  .error-box { background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.3); border-radius: 12px; padding: 24px; text-align: center; color: var(--red); font-family: 'Syne', sans-serif; }
 
   footer { border-top: 1px solid var(--border); padding: 20px 32px; max-width: 1100px; margin: 0 auto; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-  @media(max-width:600px) { header,.hero,.section,footer { padding-left:16px; padding-right:16px; } }
+  @media(max-width:600px) {
+    header, .hero, .section, footer { padding-left: 16px; padding-right: 16px; }
+    .price-now { font-size: 26px; }
+  }
 </style>
 </head>
 <body>
@@ -102,39 +106,39 @@
 
 <div class="hero">
   <h1>Anex Flo &amp; <em>Eli</em> 2в1<br>Трекер цін 🇺🇦</h1>
-  <p>Автоматичне оновлення щодня о 10:00 · Сповіщення в Telegram при знижці</p>
+  <p>Автоматичне оновлення щодня о 10:00 · Сповіщення в Telegram при знижці<br>
+  Магазини: Hotline · Antoshka · Pampik · Rozetka</p>
 </div>
 
 <div class="section">
-  <div class="stats" id="stats">
+  <div class="stats">
     <div class="stat"><div class="stat-label">Мін. ціна Flo</div><div class="stat-value flo" id="min-flo">—</div></div>
     <div class="stat"><div class="stat-label">Мін. ціна Eli</div><div class="stat-value eli" id="min-eli">—</div></div>
+    <div class="stat"><div class="stat-label">Магазинів</div><div class="stat-value" id="stores-count" style="color:var(--yellow)">—</div></div>
     <div class="stat"><div class="stat-label">Знижок сьогодні</div><div class="stat-value green" id="deals-count">—</div></div>
   </div>
 
   <div id="content">
     <div class="loading">
-      <div class="loading-spinner"></div>
+      <div class="spinner"></div>
       <div>Завантаження цін...</div>
     </div>
   </div>
 </div>
 
 <footer>
-  <span>anex.prices · Дані з Hotline.ua</span>
+  <span>anex.prices · Дані з Hotline, Antoshka, Pampik, Rozetka</span>
   <span>Оновлюється автоматично щодня о 10:00</span>
 </footer>
 
 <script>
-function fmt(p) {
-  return p ? p.toLocaleString('uk-UA') + ' ₴' : '—';
-}
+const fmt = p => p ? p.toLocaleString('uk-UA') + '\u00A0₴' : '—';
 
-function diffBadge(curr, prev) {
+function badge(curr, prev) {
   if (!prev) return '<span class="badge same">новий</span>';
   if (curr < prev) {
     const pct = Math.round((prev - curr) / prev * 100);
-    return `<span class="badge down">↓ -${pct}%</span>`;
+    return `<span class="badge down">↓ &minus;${pct}%</span>`;
   }
   if (curr > prev) {
     const pct = Math.round((curr - prev) / prev * 100);
@@ -143,38 +147,37 @@ function diffBadge(curr, prev) {
   return '<span class="badge same">= без змін</span>';
 }
 
-function cardClass(curr, prev) {
+function cardCls(curr, prev) {
   if (!prev) return '';
   if (curr < prev) return 'deal';
   if (curr > prev) return 'up';
   return '';
 }
 
-async function loadPrices() {
+async function load() {
   try {
-    const resp = await fetch('prices.json?t=' + Date.now());
-    if (!resp.ok) throw new Error('Файл не знайдено');
-    const data = await resp.json();
+    const r = await fetch('prices.json?t=' + Date.now());
+    if (!r.ok) throw new Error('Файл prices.json не знайдено');
+    const data = await r.json();
 
     document.getElementById('updated-time').textContent = 'Оновлено: ' + data.updated;
 
     const prices = data.prices || [];
+    const floItems = prices.filter(p => p.model && p.model.includes('Flo'));
+    const eliItems = prices.filter(p => p.model && p.model.includes('Eli'));
+    const minFlo   = floItems.length ? Math.min(...floItems.map(p => p.price)) : null;
+    const minEli   = eliItems.length ? Math.min(...eliItems.map(p => p.price)) : null;
+    const deals    = prices.filter(p => p.prev_price && p.price < p.prev_price).length;
 
-    // Stats
-    const floItems = prices.filter(p => p.name.includes('Flo'));
-    const eliItems = prices.filter(p => p.name.includes('Eli'));
-    const minFlo = floItems.length ? Math.min(...floItems.map(p => p.price)) : null;
-    const minEli = eliItems.length ? Math.min(...eliItems.map(p => p.price)) : null;
-    const deals  = prices.filter(p => p.prev_price && p.price < p.prev_price).length;
+    document.getElementById('min-flo').textContent   = minFlo ? fmt(minFlo) : '—';
+    document.getElementById('min-eli').textContent   = minEli ? fmt(minEli) : '—';
+    document.getElementById('stores-count').textContent = prices.length;
+    document.getElementById('deals-count').textContent  = deals;
 
-    document.getElementById('min-flo').textContent = minFlo ? fmt(minFlo) : '—';
-    document.getElementById('min-eli').textContent = minEli ? fmt(minEli) : '—';
-    document.getElementById('deals-count').textContent = deals;
-
-    // Group by model
+    // Групуємо по моделі
     const groups = {};
     for (const item of prices) {
-      const key = item.name.includes('Flo') ? 'Anex Flo 2в1' : 'Anex Eli 2в1';
+      const key = item.model || (item.name.includes('Flo') ? 'Anex Flo 2в1' : 'Anex Eli 2в1');
       if (!groups[key]) groups[key] = [];
       groups[key].push(item);
     }
@@ -182,18 +185,20 @@ async function loadPrices() {
     let html = '';
     for (const [model, items] of Object.entries(groups)) {
       const isFlo = model.includes('Flo');
-      html += `<div class="model-tag ${isFlo ? 'tag-flo' : 'tag-eli'}">${isFlo ? '🚀' : '✨'} ${model}</div>`;
+      html += `<div class="model-label ${isFlo ? 'label-flo' : 'label-eli'}">${isFlo ? '🚀' : '✨'} ${model}</div>`;
       html += '<div class="cards">';
       for (const item of items) {
-        const cls = cardClass(item.price, item.prev_price);
+        const cls = cardCls(item.price, item.prev_price);
+        const priceColor = cls === 'deal' ? 'var(--green)' : (cls === 'up' ? 'var(--red)' : 'var(--text)');
         html += `
           <div class="card ${cls}">
             <div class="card-store">${item.store}</div>
-            <div class="card-name">${item.name}</div>
+            <div class="card-sub">${item.name}</div>
             <div class="price-row">
-              <div class="price-now" style="color:${cls==='deal'?'var(--green)':'var(--text)'}">${fmt(item.price)}</div>
-              ${item.prev_price && item.prev_price !== item.price ? `<span class="price-old">${fmt(item.prev_price)}</span>` : ''}
-              ${diffBadge(item.price, item.prev_price)}
+              <div class="price-now" style="color:${priceColor}">${fmt(item.price)}</div>
+              ${item.prev_price && item.prev_price !== item.price
+                ? `<span class="price-old">${fmt(item.prev_price)}</span>` : ''}
+              ${badge(item.price, item.prev_price)}
             </div>
             <div class="card-footer">
               <span>📅 ${item.date || '—'}</span>
@@ -205,19 +210,19 @@ async function loadPrices() {
     }
 
     if (!prices.length) {
-      html = '<div class="error-box">Дані ще не завантажено. Запустіть трекер ще раз.</div>';
+      html = '<div class="error-box">⏳ Дані ще не завантажено.<br>Запустіть трекер через GitHub Actions.</div>';
     }
 
     document.getElementById('content').innerHTML = html;
 
   } catch (e) {
     document.getElementById('content').innerHTML =
-      `<div class="error-box">⚠️ Не вдалось завантажити ціни.<br><small>${e.message}</small></div>`;
+      `<div class="error-box">⚠️ Не вдалось завантажити ціни.<br><small style="opacity:.6">${e.message}</small></div>`;
     document.getElementById('updated-time').textContent = 'Помилка завантаження';
   }
 }
 
-loadPrices();
+load();
 </script>
 </body>
 </html>
