@@ -16,6 +16,10 @@ CHAT_ID      = os.environ.get("CHAT_ID", "")
 PRICES_FILE  = "prices_history.json"
 WEBSITE_FILE = "docs/prices.json"
 
+# Реальний діапазон цін коляски — від 20 000 до 80 000 ₴
+PRICE_MIN = 20000
+PRICE_MAX = 80000
+
 PAGES = [
 
     # ══════════════════════════════════════════════════════
@@ -58,21 +62,21 @@ PAGES = [
     },
 
     # ══════════════════════════════════════════════════════
-    # ANTOSHKA — реальний URL бренду
+    # ANTOSHKA — прямі URL конкретних колясок
     # ══════════════════════════════════════════════════════
     {
         "name": "Anex Flo 2в1 — Antoshka",
         "model": "Anex Flo 2в1", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/brand/anex/?q=flo",
+        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex&nameFilter=flo",
         "store_url": "https://antoshka.ua",
-        "selector": "[class*='price'], [class*='Price'], .product-price",
+        "selector": ".product-price__current, [class*='product-price'], [data-price]",
     },
     {
         "name": "Anex Eli 2в1 — Antoshka",
         "model": "Anex Eli (всі моделі)", "store": "Antoshka",
-        "url": "https://antoshka.ua/uk/brand/anex/?q=eli",
+        "url": "https://antoshka.ua/uk/proguljanki/ditjachi-koljaski/ditjachi-koljaski-2-v-1/?brand%5B%5D=anex&nameFilter=eli",
         "store_url": "https://antoshka.ua",
-        "selector": "[class*='price'], [class*='Price'], .product-price",
+        "selector": ".product-price__current, [class*='product-price'], [data-price]",
     },
 
     # ══════════════════════════════════════════════════════
@@ -83,14 +87,14 @@ PAGES = [
         "model": "Anex Flo 2в1", "store": "Karapuzov",
         "url": "https://karapuzov.com.ua/uk/anex-flo/",
         "store_url": "https://karapuzov.com.ua",
-        "selector": "[class*='price'], .price, [class*='Price']",
+        "selector": ".price, [class*='price'], [class*='Price']",
     },
     {
         "name": "Anex Eli 2в1 — Karapuzov",
         "model": "Anex Eli (всі моделі)", "store": "Karapuzov",
         "url": "https://karapuzov.com.ua/uk/anex-eli/",
         "store_url": "https://karapuzov.com.ua",
-        "selector": "[class*='price'], .price, [class*='Price']",
+        "selector": ".price, [class*='price'], [class*='Price']",
     },
 
     # ══════════════════════════════════════════════════════
@@ -99,16 +103,16 @@ PAGES = [
     {
         "name": "Anex Flo 2в1 — MA.com.ua",
         "model": "Anex Flo 2в1", "store": "MA.com.ua",
-        "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=flo",
+        "url": "https://ma.com.ua/ua/shop/kolyaska-2-v-1-anex-flo",
         "store_url": "https://ma.com.ua",
-        "selector": "[class*='price'], .price",
+        "selector": ".price, [class*='price'], [class*='Price']",
     },
     {
         "name": "Anex Eli 2в1 — MA.com.ua",
         "model": "Anex Eli (всі моделі)", "store": "MA.com.ua",
         "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=eli",
         "store_url": "https://ma.com.ua",
-        "selector": "[class*='price'], .price",
+        "selector": ".price, [class*='price'], [class*='Price']",
     },
 
     # ══════════════════════════════════════════════════════
@@ -132,9 +136,12 @@ PAGES = [
 
 
 def extract_price(text: str) -> int | None:
+    """Витягує ціну з рядка. Перевіряє що це реальна ціна коляски."""
     digits = re.sub(r"[^\d]", "", text.strip())
-    if digits and 5000 < int(digits) < 300000:
-        return int(digits)
+    if digits:
+        val = int(digits)
+        if PRICE_MIN <= val <= PRICE_MAX:
+            return val
     return None
 
 
@@ -170,10 +177,10 @@ def parse_all_prices() -> dict:
                 except Exception:
                     pass
 
-                # Fallback — regex по HTML
+                # Fallback — regex по HTML (шукаємо лише реальні ціни)
                 if not price:
                     content = page.content()
-                    for m in re.findall(r"(\d[\d\s]{3,7}\d)\s*(?:₴|грн)", content):
+                    for m in re.findall(r"(\d[\d\s]{3,6}\d)\s*(?:₴|грн)", content):
                         p_val = extract_price(m)
                         if p_val:
                             price = p_val
@@ -236,6 +243,7 @@ def save_history(data: dict):
 def run():
     print(f"\n{'='*60}")
     print(f"  🛒 Anex Tracker | {datetime.now().strftime('%d.%m.%Y %H:%M')}")
+    print(f"  Діапазон цін: {fmt(PRICE_MIN)} — {fmt(PRICE_MAX)}")
     print(f"{'='*60}")
 
     history = load_history()
