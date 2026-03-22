@@ -12,8 +12,8 @@ from playwright.sync_api import sync_playwright
 import requests
 
 # ── КОНФІГ ──────────────────────────────────────────────────────────────────
-BOT_TOKEN   = "8654506714:AAHaC6A4D_s-JXZWQUjZiMC8MmeowS0jhpM"
-CHAT_ID     = "-1003762393572"
+BOT_TOKEN   = os.environ.get("BOT_TOKEN", "")
+CHAT_ID     = os.environ.get("CHAT_ID", "")
 PRICES_FILE  = "prices_history.json"
 WEBSITE_FILE = "docs/prices.json"   # GitHub Pages читає з папки /docs
 
