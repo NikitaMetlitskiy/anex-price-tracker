@@ -1,0 +1,39 @@
+name: Anex Price Tracker 🛒
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: 📂 Restore price history
+        uses: actions/cache@v4
+        with:
+          path: prices_history.json
+          key: prices-history-${{ github.run_id }}
+          restore-keys: |
+            prices-history-
+
+      - name: 🔍 Run price tracker
+        run: python anex_tracker.py
+
+      - name: 💾 Save updated price history
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: prices_history.json
+          key: prices-history-${{ github.run_id }}
