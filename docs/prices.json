@@ -1,0 +1,23 @@
+{
+  "updated": "22.03.2026 13:41",
+  "prices": [
+    {
+      "name": "Anex Flo 2в1",
+      "price": 33990,
+      "store": "Hotline (мін. ціна)",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
+      "date": "2026-03-22",
+      "prev_price": 33990,
+      "prev_date": "2026-03-22"
+    },
+    {
+      "name": "Anex Eli 2в1",
+      "price": 32990,
+      "store": "Hotline (мін. ціна)",
+      "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
+      "date": "2026-03-22",
+      "prev_price": 32990,
+      "prev_date": "2026-03-22"
+    }
+  ]
+}
