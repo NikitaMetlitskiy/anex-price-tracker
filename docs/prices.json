@@ -1,5 +1,5 @@
 {
-  "updated": "01.04.2026 16:05",
+  "updated": "02.04.2026 08:07",
   "prices": [
     {
       "name": "Anex Flo 2в1 — Hotline",
@@ -7,7 +7,7 @@
       "price": 33990,
       "store": "Hotline",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557565/",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 33990,
       "prev_date": "2026-04-01"
     },
@@ -17,37 +17,37 @@
       "price": 31799,
       "store": "Hotline",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21557629/",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 31799,
       "prev_date": "2026-04-01"
     },
     {
       "name": "Anex Eli Secret — Hotline",
       "model": "Anex Eli Secret",
-      "price": 33990,
+      "price": 31799,
       "store": "Hotline",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558179/",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 33990,
       "prev_date": "2026-04-01"
     },
     {
       "name": "Anex Eli Muse — Hotline",
       "model": "Anex Eli Muse",
-      "price": 33990,
+      "price": 31799,
       "store": "Hotline",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558180/",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 33990,
       "prev_date": "2026-04-01"
     },
     {
       "name": "Anex Eli Midnight — Hotline",
       "model": "Anex Eli Midnight",
-      "price": 33990,
+      "price": 31799,
       "store": "Hotline",
       "url": "https://hotline.ua/ua/deti/detskie-kolyaski/313721-21558181/",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 33990,
       "prev_date": "2026-04-01"
     },
@@ -57,7 +57,7 @@
       "price": 33990,
       "store": "MA.com.ua",
       "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=flo",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 33990,
       "prev_date": "2026-04-01"
     },
@@ -67,7 +67,7 @@
       "price": 30999,
       "store": "MA.com.ua",
       "url": "https://ma.com.ua/ua/ulitsa/kolyaski/stroller_type=2-v-1/brand=anex/stroller_series=eli",
-      "date": "2026-04-01",
+      "date": "2026-04-02",
       "prev_price": 30999,
       "prev_date": "2026-04-01"
     },
